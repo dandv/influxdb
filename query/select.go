@@ -87,12 +87,14 @@ func Prepare(stmt *influxql.SelectStatement, shardMapper ShardMapper, opt Select
 // Select compiles, prepares, and then initiates execution of the query using the
 // default compile options.
 func Select(ctx context.Context, stmt *influxql.SelectStatement, shardMapper ShardMapper, opt SelectOptions) (Cursor, error) {
+	fmt.Println("preparing statement....")
 	s, err := Prepare(stmt, shardMapper, opt)
 	if err != nil {
 		return nil, err
 	}
 	// Must be deferred so it runs after Select.
 	defer s.Close()
+	fmt.Println("executing statement.Select()")
 	return s.Select(ctx)
 }
 
