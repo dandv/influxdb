@@ -330,6 +330,7 @@ LOOP:
 
 		// Send any other statements to the underlying statement executor.
 		err = e.StatementExecutor.ExecuteStatement(stmt, ctx)
+		fmt.Println("1 Finished calling ExecuteStatement()")
 		if err == ErrQueryInterrupted {
 			// Query was interrupted so retrieve the real interrupt error from
 			// the query task if there is one.
@@ -366,6 +367,7 @@ LOOP:
 
 	// Send error results for any statements which were not executed.
 	for ; i < len(query.Statements)-1; i++ {
+		fmt.Println("2 sending result ", i)
 		if err := ctx.send(&Result{
 			StatementID: i,
 			Err:         ErrNotExecuted,

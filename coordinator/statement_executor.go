@@ -59,8 +59,10 @@ type StatementExecutor struct {
 
 // ExecuteStatement executes the given statement with the given execution context.
 func (e *StatementExecutor) ExecuteStatement(stmt influxql.Statement, ctx *query.ExecutionContext) error {
+	fmt.Println("In ExecuteStatement()")
 	// Select statements are handled separately so that they can be streamed.
 	if stmt, ok := stmt.(*influxql.SelectStatement); ok {
+		fmt.Println("Executing select statement...")
 		return e.executeSelectStatement(stmt, ctx)
 	}
 
@@ -539,7 +541,9 @@ func (e *StatementExecutor) executeSetPasswordUserStatement(q *influxql.SetPassw
 }
 
 func (e *StatementExecutor) executeSelectStatement(stmt *influxql.SelectStatement, ctx *query.ExecutionContext) error {
+
 	cur, err := e.createIterators(ctx, stmt, ctx.ExecutionOptions)
+	fmt.Println("created iterators for executing select statement")
 	if err != nil {
 		return err
 	}
@@ -590,6 +594,7 @@ func (e *StatementExecutor) executeSelectStatement(stmt *influxql.SelectStatemen
 		if err := ctx.Send(result); err != nil {
 			return err
 		}
+		fmt.Println("sent results back...")
 
 		emitted = true
 	}
@@ -617,6 +622,7 @@ func (e *StatementExecutor) executeSelectStatement(stmt *influxql.SelectStatemen
 
 	// Always emit at least one result.
 	if !emitted {
+		fmt.Println("Didn't emit results, so sending empty result")
 		return ctx.Send(&query.Result{
 			Series: make([]*models.Row, 0),
 		})
