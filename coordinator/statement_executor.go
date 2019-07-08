@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"sort"
 	"strconv"
 	"strings"
@@ -541,9 +542,9 @@ func (e *StatementExecutor) executeSetPasswordUserStatement(q *influxql.SetPassw
 }
 
 func (e *StatementExecutor) executeSelectStatement(stmt *influxql.SelectStatement, ctx *query.ExecutionContext) error {
-	fmt.Println("about to create iterators...")
+	log.Println("about to create iterators...")
 	cur, err := e.createIterators(ctx, stmt, ctx.ExecutionOptions)
-	fmt.Println("created iterators for executing select statement")
+	log.Println("created iterators for executing select statement")
 	if err != nil {
 		return err
 	}
@@ -641,7 +642,7 @@ func (e *StatementExecutor) createIterators(ctx context.Context, stmt *influxql.
 	}
 
 	// Create a set of iterators from a selection.
-	fmt.Println("about to run query.Select()...")
+	log.Println("about to run query.Select()...")
 	cur, err := query.Select(ctx, stmt, e.ShardMapper, sopt)
 	if err != nil {
 		return nil, err
