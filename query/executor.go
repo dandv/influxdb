@@ -157,7 +157,7 @@ func NewContextWithIterators(ctx context.Context, itr *Iterators) context.Contex
 type StatementExecutor interface {
 	// ExecuteStatement executes a statement. Results should be sent to the
 	// results channel in the ExecutionContext.
-	ExecuteStatement(stmt influxql.Statement, ctx *ExecutionContext) error
+	ExecuteStatement(stmt influxql.Statement, ctx *ExecutionContext, logger *zap.Logger) error
 }
 
 // StatementNormalizer normalizes a statement before it is executed.
@@ -329,8 +329,8 @@ LOOP:
 		}
 
 		// Send any other statements to the underlying statement executor.
-		err = e.StatementExecutor.ExecuteStatement(stmt, ctx)
-		fmt.Println("1 Finished calling ExecuteStatement()")
+		err = e.StatementExecutor.ExecuteStatement(stmt, ctx, e.Logger)
+		e.Logger.Info("1 Finished calling ExecuteStatement()")
 		if err == ErrQueryInterrupted {
 			// Query was interrupted so retrieve the real interrupt error from
 			// the query task if there is one.

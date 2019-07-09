@@ -12,6 +12,8 @@ import (
 	"strings"
 	"time"
 
+	"go.uber.org/zap"
+
 	"github.com/influxdata/influxdb"
 	"github.com/influxdata/influxdb/models"
 	"github.com/influxdata/influxdb/monitor"
@@ -59,12 +61,12 @@ type StatementExecutor struct {
 }
 
 // ExecuteStatement executes the given statement with the given execution context.
-func (e *StatementExecutor) ExecuteStatement(stmt influxql.Statement, ctx *query.ExecutionContext) error {
-	fmt.Println("In ExecuteStatement()")
+func (e *StatementExecutor) ExecuteStatement(stmt influxql.Statement, ctx *query.ExecutionContext, logger *zap.Logger) error {
+	logger.Info("about to execute select statement")
 	// Select statements are handled separately so that they can be streamed.
 	if stmt, ok := stmt.(*influxql.SelectStatement); ok {
-		fmt.Println("Executing select statement...")
-		return e.executeSelectStatement(stmt, ctx)
+		logger.Info("Executing select statement...")
+		return e.executeSelectStatement(stmt, ctx, logger)
 	}
 
 	var rows models.Rows
@@ -206,7 +208,7 @@ func (e *StatementExecutor) ExecuteStatement(stmt influxql.Statement, ctx *query
 		err = e.executeSetPasswordUserStatement(stmt)
 	case *influxql.ShowQueriesStatement, *influxql.KillQueryStatement:
 		// Send query related statements to the task manager.
-		return e.TaskManager.ExecuteStatement(stmt, ctx)
+		return e.TaskManager.ExecuteStatement(stmt, ctx, logger)
 	default:
 		return query.ErrInvalidQuery
 	}
@@ -541,10 +543,10 @@ func (e *StatementExecutor) executeSetPasswordUserStatement(q *influxql.SetPassw
 	return e.MetaClient.UpdateUser(q.Name, q.Password)
 }
 
-func (e *StatementExecutor) executeSelectStatement(stmt *influxql.SelectStatement, ctx *query.ExecutionContext) error {
-	log.Println("about to create iterators...")
+func (e *StatementExecutor) executeSelectStatement(stmt *influxql.SelectStatement, ctx *query.ExecutionContext, logger *zap.Logger) error {
+	logger.Info("about to create iterators...")
 	cur, err := e.createIterators(ctx, stmt, ctx.ExecutionOptions)
-	log.Println("created iterators for executing select statement")
+	logger.Info("created iterators for executing select statement")
 	if err != nil {
 		return err
 	}
