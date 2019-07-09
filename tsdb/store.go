@@ -289,6 +289,8 @@ func (s *Store) loadShards() error {
 	log, logEnd := logger.NewOperation(s.Logger, "Open store", "tsdb_open")
 	defer logEnd()
 
+	fmt.Println("go max procs: ", runtime.GOMAXPROCS(0))
+	//fmt.Println("setting limiter to use ")
 	t := limiter.NewFixed(runtime.GOMAXPROCS(0))
 	resC := make(chan *res)
 	var n int
@@ -359,7 +361,10 @@ func (s *Store) loadShards() error {
 				}
 
 				n++
+				fmt.Printf("Opening shard %d\n", n)
 				go func(db, rp, sh string) {
+					for i := 0; i < 1e10; i++ {
+					}
 					t.Take()
 					defer t.Release()
 
@@ -451,6 +456,7 @@ func (s *Store) loadShards() error {
 			}
 		}
 	}
+	fmt.Println("ALL SHARDS OPENED")
 
 	return nil
 }
