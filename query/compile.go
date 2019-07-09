@@ -3,6 +3,7 @@ package query
 import (
 	"errors"
 	"fmt"
+	"log"
 	"strings"
 	"time"
 
@@ -1133,6 +1134,7 @@ func (c *compiledStatement) Prepare(shardMapper ShardMapper, sopt SelectOptions)
 		}
 	}
 
+	log.Println("About to map shards...")
 	// Create an iterator creator based on the shards in the cluster.
 	shards, err := shardMapper.MapShards(c.stmt.Sources, timeRange, sopt)
 	if err != nil {

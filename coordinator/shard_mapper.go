@@ -3,6 +3,7 @@ package coordinator
 import (
 	"context"
 	"io"
+	"log"
 	"time"
 
 	"github.com/influxdata/influxdb/query"
@@ -45,6 +46,7 @@ func (e *LocalShardMapper) MapShards(sources influxql.Sources, t influxql.TimeRa
 }
 
 func (e *LocalShardMapper) mapShards(a *LocalShardMapping, sources influxql.Sources, tmin, tmax time.Time) error {
+	log.Println("mapShards()")
 	for _, s := range sources {
 		switch s := s.(type) {
 		case *influxql.Measurement:
