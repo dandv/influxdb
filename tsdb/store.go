@@ -375,9 +375,9 @@ func (s *Store) loadShards() error {
 				n++
 				fmt.Printf("Opening shard %d\n", n)
 				go func(db, rp, sh string) {
+					t.Take()
 					for i := 0; i < 1e10; i++ {
 					}
-					t.Take()
 					defer t.Release()
 
 					start := time.Now()
