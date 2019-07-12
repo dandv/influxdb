@@ -199,6 +199,14 @@ func (s *Store) Path() string { return s.path }
 
 // Open initializes the store, creating all necessary directories, loading all
 // shards as well as initializing periodic maintenance of them.
+
+func (s *Store) IsOpen() bool {
+	s.mu.RLock()
+	opened := s.opened
+	s.mu.RUnlock()
+	return opened
+}
+
 func (s *Store) Open() error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
