@@ -300,7 +300,7 @@ func (s *Store) loadShards() error {
 	defer logEnd()
 
 	fmt.Println("go max procs: ", runtime.GOMAXPROCS(0))
-	l := runtime.GOMAXPROCS(0)
+	l := runtime.GOMAXPROCS(0) / 2
 	fmt.Println("setting limiter to use ", l)
 
 	t := limiter.NewFixed(l)
