@@ -226,11 +226,15 @@ func (s *Store) Open() error {
 		return err
 	}
 
+	fmt.Println("load shards")
 	if err := s.loadShards(); err != nil {
 		return err
 	}
+	fmt.Println("end load shards")
 
 	s.opened = true
+
+	fmt.Println("s.opened set to true")
 
 	if !s.EngineOptions.MonitorDisabled {
 		s.wg.Add(1)
