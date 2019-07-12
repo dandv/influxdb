@@ -290,7 +290,7 @@ func (s *Store) loadShards() error {
 	defer logEnd()
 
 	fmt.Println("go max procs: ", runtime.GOMAXPROCS(0))
-	l := runtime.GOMAXPROCS(0) / 2
+	l := runtime.GOMAXPROCS(0) / 4
 	fmt.Println("setting limiter to use ", l)
 
 	t := limiter.NewFixed(l)
@@ -458,7 +458,7 @@ func (s *Store) loadShards() error {
 			}
 		}
 	}
-	fmt.Println("ALL SHARDS OPENED")
+	//fmt.Println("ALL SHARDS OPENED")
 
 	return nil
 }
