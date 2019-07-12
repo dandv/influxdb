@@ -201,9 +201,7 @@ func (s *Store) Path() string { return s.path }
 // shards as well as initializing periodic maintenance of them.
 
 func (s *Store) IsOpen() bool {
-	s.mu.RLock()
 	opened := s.opened
-	s.mu.RUnlock()
 	return opened
 }
 
